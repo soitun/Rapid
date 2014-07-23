@@ -85,16 +85,48 @@ in a file named "COPYING".  If not, see <http://www.gnu.org/licenses/>.
     <url-pattern>/soa</url-pattern>
   </servlet-mapping>
   
+  <!-- These parameters are for local date / time formats -->
+  
   <context-param>
-    <description>Whether or not to show the stack trace in errors</description>
-    <param-name>showStackTrace</param-name>
-    <param-value>true</param-value>
+    <description>The display format to be used for local dates</description>
+    <param-name>localDateFormat</param-name>
+    <param-value>dd/MM/yyyy</param-value>
   </context-param>
   
   <context-param>
-    <description>Whether or not to attempt to defeat the cache both for resources and page generation</description>
+    <description>The display format to be used for local date / times</description>
+    <param-name>localDateTimeFormat</param-name>
+    <param-value>dd/MM/yyyy HH:mm a</param-value>
+  </context-param>
+    
+  <!-- The parameters below are for developement and should be false (or removed) for production -->
+  
+  <context-param>
+    <description>Whether or not to attempt to defeat the client-side cache</description>
     <param-name>noCaching</param-name>
     <param-value>true</param-value>
   </context-param>
   
+  <context-param>
+    <description>Whether or not to show the full stack trace in errors</description>
+    <param-name>showStackTrace</param-name>
+    <param-value>true</param-value>
+  </context-param>
+      
+  <context-param>
+    <description>Whether or not to rebuild the pages each time they are requested</description>
+    <param-name>rebuildPages</param-name>
+    <param-value>true</param-value>
+  </context-param>
+
+  <!-- This is useful for doing demos on different networks, the cache is exported with the application -->
+  
+  <!-- 
+  <context-param>
+    <description>Whether to cache the database and webservice action requests / responses</description>
+    <param-name>actionCache</param-name>
+    <param-value>true</param-value>
+  </context-param>
+   -->
+   
 </web-app>
