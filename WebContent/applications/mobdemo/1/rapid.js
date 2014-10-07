@@ -13,7 +13,7 @@ function Action_control(actions) {
 }
 
 function Action_datacopy(data, outputs) {
-	if (data && outputs) {
+	if (data !== undefined && outputs) {
 		for (var i in outputs) {
 			var output = outputs[i];			
 			window["setData_" + output.type](output.id, data, output.field, output.details);
@@ -543,7 +543,7 @@ function getData_dropdown(ev, id, field, details) {
 }
 
 function setData_dropdown(id, data, field, details) {
-  if (data) {
+  if (data !== undefined) {
   	var control = $("#" + id);
   	data = makeDataObject(data, field);
   	if (data.rows && data.fields) {
