@@ -262,12 +262,45 @@ function Init_hints(id, details) {
   }
 }
 
+function Init_list(id, details) {
+  var list = $("#" + id); 	        
+  if (details.slide) {
+  	var header = list.children("li.listHeader");
+  	var selectedCount = list.children("span.listSelectedCount");
+  	header.click( function(ev) {
+  		header.toggleClass("listVisible");
+  		list.children("li.listOption").slideToggle();  		
+  	});	
+  }		
+  list.children("li.listOption").click( details, function(ev) {
+  	if (!ev.data.multi) list.children().removeClass("listSelected");
+  	$(ev.target).toggleClass("listSelected");
+  	if (ev.data.slide) {
+  		var text = "";
+  		var count = 0;
+  		list.children("li.listSelected").each( function() { 
+  				text += $(this).html() + ", "; 
+  				count ++;
+  		});
+  		if (count > 0) {
+  			text = text.substr(0, text.length - 2);
+  			selectedCount.text(count).show();
+  		} else {
+  			text = ev.data.header;
+  			selectedCount.hide();
+  		}
+  		header.html(text);	
+  	}
+  	list.trigger("change");	
+  });
+}
+
 function Init_pagePanel(id, details) {
   var bodyHtml = "<center><h1>Page</h1></center>";
   
   // request the page		
   $.ajax({
-     	url: "~?a=" + details.appId + "&v=" + details.version + "&p=" + details.pageId,
+     	url: "~?a=" + details.appId + "&v=" + details.version + "&p=" + details.pageId + "&action=dialogue",  // reuse the design link hiding from dialogues
      	type: "GET",          
          data: null,        
          error: function(server, status, error) { 
@@ -287,12 +320,18 @@ function Init_pagePanel(id, details) {
              	for (var i in items) {
              		// check for a script node
              		switch (items[i].nodeName) {
-             		case "#text" : case "TITLE" : // ignore these types
+             		case "#text" : case "TITLE" : case "META" : // ignore these types
              		break;
              		case "SCRIPT" :
              			if (items[i].innerHTML) {
-             				script += items[i].outerHTML;
+             				script += items[i].outerHTML; // ignore SCRIPT links
              			}
+             		break;
+             		case "LINK" :
+             			var href = $(items[i].outerHTML).attr("href");
+             			if (!$("head").children("[href='" + href + "']")[0]) { // ignore if link already present in document head
+             				bodyHtml += items[i].outerHTML;
+             			}           			
              		break;
              		default :
              			if (items[i].outerHTML) {
@@ -915,6 +954,109 @@ function setData_input(id, data, field, details, changeEvents) {
   } 
   control.val(value);
   if (changeEvents) control.trigger("change");
+}
+
+function setData_list(id, data, field, details, changeEvents) {
+  if (data != null && data !== undefined) {
+  	var list = $("#" + id);
+  	data = makeDataObject(data, field);
+  	if (data.rows && data.fields) {
+  		var hide = list.children("li.listOption").first().is(":hidden");
+  		for (var i in data.rows) {
+  			var row = data.rows[i];		
+  			var text = "";
+  			var value = "";
+  			if (data.fields) {
+  				for (var j in data.fields) {
+  					if (data.fields[j].toLowerCase() == "text") text = data.rows[i][j];
+  					if (data.fields[j].toLowerCase() == "value") value = data.rows[i][j];
+  				}
+  			}
+  			if (!text) text = row[0];
+  			if (!value && row[1]) value = row[1];
+  			list.append("<li class='listOption'" + (hide ? " style='display:none;'" : "") + " data-value='" + value + "'>" + text + "</li>");
+  			list.children().last().click( details, function(ev) {
+  				if (!ev.data.multi) list.children().removeClass("listSelected");
+  				$(ev.target).toggleClass("listSelected");
+  				if (ev.data.slide) {
+  					var text = "";
+  					var header = list.children("li.listHeader");
+  					var count = 0;
+  					var selectedCount = list.children("span.listSelectedCount");
+  					list.children("li.listSelected").each( function() { 
+  							text += $(this).html() + ", "; 
+  							count ++;
+  					});				
+  					if (count > 0) {
+  						text = text.substr(0, text.length - 2);
+  						selectedCount.text(count).show();
+  					} else {
+  						text = ev.data.header;
+  						selectedCount.hide();
+  					}					
+  					if (!details.multi) selectedCount.hide();									
+  					header.html(text);		
+  				}
+  				list.trigger("change");
+  			});
+  		}
+  	} 
+  }
+}
+
+function getProperty_list_value(ev, id, field, details) {
+  var value = "";
+  $("#" + id).children("li.listSelected").each( function() { 
+  	value += $(this).attr("data-value") + ","; 
+  });	        
+  if (value) {
+  	return value.substring(0, value.length - 1);
+  } else {
+  	return null;
+  }
+}
+
+function setProperty_list_value(ev, id, field, details, data, changeEvents) {
+  var data = makeDataObject(data);			        
+  var values = [];
+  if (data.rows[0][0]) {
+  	values = data.rows[0][0].split(",");
+  } else {
+  	values = null;
+  }
+  var list = $("#" + id);
+  var header = list.children("li.listHeader");
+  var selectedCount = list.children("span.listSelectedCount");
+  if (!details.multi || values == null) list.children().removeClass("listSelected");
+  if (values) {	
+  	var headerText = "";
+  	var selectCount = 0;
+  	list.children("li.listOption").each( function() {		
+  		var option = $(this);
+  		var match = false;
+  		for (var i in values) {			
+  			if (values[i].trim() == option.attr("data-value")) {
+  				option.addClass("listSelected");
+  				headerText += option.text() + ", ";
+  				selectCount ++;
+  				match = true;
+  				break;
+  			} 
+  			option.removeClass("listSelected");
+  		}
+  	});
+  	if (selectCount > 0) {
+  		headerText = headerText.substring(0,headerText.length - 2);			
+  		if (details.multi && details.slide) selectedCount.text(selectCount).show();
+  	} else {			
+  		headerText = details.header;
+  		selectedCount.hide();
+  	}
+  	header.html(headerText);	
+  } else {
+  	header.html(details.header);
+  	selectedCount.hide();
+  }
 }
 
 function getData_radiobuttons(ev, id, field, details) {

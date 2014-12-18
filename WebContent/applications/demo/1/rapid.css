@@ -75,6 +75,23 @@ table.grid {
 	z-index: 10009;
 }
 
+/* List control resource styles */
+
+ul.list {
+	list-style-type: none;
+	display: inline-block;
+    padding: 0px;
+    margin: 0px;
+}	    
+
+li.listOption {
+	cursor: pointer;
+}           
+
+span.listSelectedCount {
+	float: right;
+}
+
 /* Tabs control resource styles */
 
 ul.tabsHeader {
