@@ -98,6 +98,20 @@ in a file named "COPYING".  If not, see <http://www.gnu.org/licenses/>.
     <param-name>localDateTimeFormat</param-name>
     <param-value>dd/MM/yyyy HH:mm a</param-value>
   </context-param>
+  
+  <!-- These parameters define how often (in seconds) to check for pages that haven't been accessed for a while and how long (in seconds) is allowed to ellapse before a page is removed from memory -->
+  
+  <context-param>
+    <description>Number of seconds between checking the how long has passed since each page was accessed</description>
+    <param-name>pageAgeCheckInterval</param-name>
+    <param-value>1800</param-value>
+  </context-param>
+  
+  <context-param>
+    <description>If more seconds have passed than the age below the page is removed from memory at the next interval</description>
+    <param-name>pageMaxAge</param-name>
+    <param-value>1800</param-value>
+  </context-param>
     
   <!-- The parameters below are for developement and should be false (or removed) for production -->
   
