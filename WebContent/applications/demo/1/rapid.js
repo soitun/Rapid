@@ -271,7 +271,13 @@ function Init_list(id, details) {
   	var selectedCount = list.children("span.listSelectedCount");
   	header.click( function(ev) {
   		header.toggleClass("listVisible");
-  		list.children("li.listOption").slideToggle();  		
+  		list.children("li.listOption").slideToggle(500, function() {
+  			if (header.hasClass("listVisible")) {
+  				list.children("span.listSlider").html("&#xf077;");
+  			} else {
+  				list.children("span.listSlider").html("&#xf078;");
+  			}
+  		});  				
   	});	
   }		
   list.children("li.listOption").click( details, function(ev) {

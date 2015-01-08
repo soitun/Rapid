@@ -89,7 +89,12 @@ li.listOption {
 }           
 
 span.listSelectedCount {
+	float: left;
+} 
+
+span.listSlider {
 	float: right;
+	font-family: FontAwesome;
 }
 
 /* Tabs control resource styles */
