@@ -46,6 +46,11 @@ in a file named "COPYING".  If not, see <http://www.gnu.org/licenses/>.
     <listener-class>com.rapid.server.RapidServletContextListener</listener-class>
   </listener>
   
+  <listener>
+      	<description>This class tracks user sessions being created and destroyed</description>
+        <listener-class>com.rapid.server.RapidSessionListener</listener-class>
+   </listener>
+  
   <servlet>
     <description>This is the main working servlet for delivering pages and dealing with actions</description>
     <display-name>Rapid</display-name>
