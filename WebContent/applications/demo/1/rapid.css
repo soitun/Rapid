@@ -37,35 +37,6 @@ table.grid {
 	border-collapse:collapse;
 }
 
-/* Hints control resource styles */
-
-.hint {
-	position: absolute;
-	z-index: 10009;
-}
-
-/* List control resource styles */
-
-ul.list {
-	list-style-type: none;
-	display: inline-block;
-    padding: 0px;
-    margin: 0px;
-}	    
-
-li.listOption {
-	cursor: pointer;
-}           
-
-span.listSelectedCount {
-	float: left;
-} 
-
-span.listSlider {
-	float: right;
-	font-family: FontAwesome;
-}
-
 /* Tabs control resource styles */
 
 ul.tabsHeader {
