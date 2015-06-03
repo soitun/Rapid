@@ -532,43 +532,6 @@ function Init_grid(id, details) {
   }
 }
 
-function Init_tabGroup(id, details) {
-  $("#" + id).children("ul").children("li").each( function() {
-  
-  	// get a reference to the tabs group
-  	var tabs = $("#" + id);
-  	// assume horizontal
-  	horizontal = true;
-  	// check for vertical
-  	if (window[id + "details"] && window[id + "details"].tabType == "V") horizontal = false;
-  	// apply extra class if horizontal
-  	if (horizontal) {
-  		tabs.children("ul").addClass("tabsHeaderH");
-  	} else {
-  		tabs.children("ul").addClass("tabsHeaderV");
-  	}
-  
-  	$(this).click( function(ev, index) {		
-  		// remove selected from all tab header items
-  		tabs.children("ul").children("li").removeClass("selected");
-  		// remove selected from all tab body items and hide
-  		tabs.children("div").removeClass("selected").css("display","none");
-  		// add selected to the li we just clicked on, also get it's index, plus 2, 1 to go from zero to 1 based, the other 1 because of the headers
-  		var index = $(this).addClass("selected").index() + 2;
-  		// apply selected to the correct body
-  		tabs.children("div:nth-child(" + index + ")").addClass("selected");
-  		// check the type
-  		if (horizontal) {
-  			// selected tab is display block
-  			tabs.children("div.selected").css("display","block");			
-  		} else {
-  			// selected tab is table cell
-  			tabs.children("div.selected").css("display","table-cell");
-  		}		
-  	});
-  });
-}
-
 
 /* Control getData and setData methods */
 
