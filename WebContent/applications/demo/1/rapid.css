@@ -31,6 +31,13 @@ span.loading {
 	font-size: 0.5em;
 }
 
+/* Chart control resource styles */
+
+.chart {
+	width: 300px;
+	height: 200px;
+}
+
 /* Grid control resource styles */
 
 table.grid {

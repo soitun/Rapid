@@ -15,6 +15,11 @@ function Event_error(eventName, controlId, ex) {
 	}
 }
 
+/* Chart control resource JavaScript */
+
+// global for all charts in the page
+_charts = {};
+
 /* Data store control resource JavaScript */
 
 function getDataStoreData(id, details, field) {
@@ -463,6 +468,29 @@ function getWebserviceActionMaxSequence(actionId) {
 /* Control initialisation methods */
 
 
+function Init_chart(id, details) {
+  // Get context with jQuery - using jQuery's .get() method.
+  var canvas = $("#" + id).get(0); 
+  var ctx = canvas.getContext("2d");
+  // get the width
+  var w = canvas.width;
+  // get the height
+  var h = canvas.height;
+  // chart border
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(w, 0);
+  ctx.lineTo(w, h);
+  ctx.lineTo(0, h);
+  ctx.lineTo(0, 0);
+  ctx.stroke();
+  // write the chart name
+  ctx.font = "bold 30px Arial";
+  ctx.fillStyle = "#ccc";
+  ctx.textAlign = "center";
+  ctx.fillText(details.name,w / 2, h / 2);
+}
+
 function Init_date(id, details) {
   A_TCALCONF.format = details.dateFormat;	     
   f_tcalAdd (id);
@@ -541,6 +569,64 @@ function Init_grid(id, details) {
 
 /* Control getData and setData methods */
 
+
+function setData_chart(ev, id, field, details, data, changeEvents) {
+  var control = $("#" + id);
+  var canvas = control.get(0);
+  var ctx = canvas.getContext("2d");
+  // the chart data object
+  var data = {};
+  if (details.chartType == "Pie") {
+  	data = [
+  	    {
+  	        value: 300,
+  	        color:"#F7464A",
+  	        highlight: "#FF5A5E",
+  	        label: "Red"
+  	    },
+  	    {
+  	        value: 50,
+  	        color: "#46BFBD",
+  	        highlight: "#5AD3D1",
+  	        label: "Green"
+  	    },
+  	    {
+  	        value: 100,
+  	        color: "#FDB45C",
+  	        highlight: "#FFC870",
+  	        label: "Yellow"
+  	    }
+  	]
+  } else {
+  	data = {
+  	    labels: ["January", "February", "March", "April", "May", "June", "July"],
+  	    datasets: [
+  	        {
+  	            label: "Dataset 1",
+  	            fillColor: "rgba(220,220,220,0.2)",
+  	            strokeColor: "rgba(220,220,220,1)",
+  	            pointColor: "rgba(220,220,220,1)",
+  	            pointStrokeColor: "#fff",
+  	            pointHighlightFill: "#fff",
+  	            pointHighlightStroke: "rgba(220,220,220,1)",
+  	            data: [65, 59, 80, 81, 56, 55, 40]
+  	        },
+  	        {
+  	            label: "Dataset 2",
+  	            fillColor: "rgba(151,187,205,0.2)",
+  	            strokeColor: "rgba(151,187,205,1)",
+  	            pointColor: "rgba(151,187,205,1)",
+  	            pointStrokeColor: "#fff",
+  	            pointHighlightFill: "#fff",
+  	            pointHighlightStroke: "rgba(151,187,205,1)",
+  	            data: [28, 48, 40, 19, 86, 27, 90]
+  	        }
+  	    ]
+  	}
+  }
+  // make us a chart of the right type
+  _charts[this.id] = new Chart(ctx)[details.chartType](data, {});
+}
 
 function getData_checkbox(ev, id, field, details) {
   return $("#" + id).prop("checked") ? "true" : "false";
@@ -741,6 +827,7 @@ function setProperty_dropdown_value(ev, id, field, details, data, changeEvents) 
 function getData_grid(ev, id, field, details) {
   var data = null;
   if (details) {
+  	// if there is a datastore and the grid is not present in the page    
   	if (details.dataStorageType && !$("#" + id)[0]) {
   		data = getGridDataStoreData(id, details);
   		if (field && data.fields && data.rows && data.rows.length > 0) {
@@ -898,12 +985,15 @@ function getProperty_grid_selectedRowData(ev, id, field, details) {
   	}
   }
   if (field && data.fields && data.rows && data.rows.length > 0) {
+  	var found = false;
   	for (var i in data.fields) {
   		if (data.fields[i] && data.fields[i].toLowerCase() == field.toLowerCase()) {
   			data = data.rows[0][i];
+  			found = true;
   			break;
   		}
   	}
+  	if (!found) data = null;
   }
   return data;
 }
@@ -970,8 +1060,17 @@ function setProperty_grid_selectedRowData(ev, id, field, details, data, changeEv
   		// remove the selection
   		gridData.selectedRowNumber = null;
   	}
-  	// save the grid
-  	saveGridDataStoreData(id, details, gridData);
+  	// if there is a datastore to save the data to
+  	if (details && details.dataStorageType) {
+  		// if the grid is visible in the page
+  		if ($("#" + id)[0]) {
+  	  		// update the grid with the gridData (which will save as well)
+  	  		setData_grid(ev, id, field, details, gridData, changeEvents);
+  	  	} else {
+  	  		// save the grid
+  	  		saveGridDataStoreData(id, details, gridData);
+  	  	}
+  	}
   } else {
   	// append if no selected row
   	if (data) {
