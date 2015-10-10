@@ -35,6 +35,13 @@ in a file named "COPYING".  If not, see <http://www.gnu.org/licenses/>.
   <filter>
     <filter-name>RapidFilter</filter-name>
     <filter-class>com.rapid.server.filter.RapidFilter</filter-class>
+    <!-- 
+    <init-param>
+         <description>Whether unauthenticated users will be allowed access to application security providers (but not important resources)</description>
+        <param-name>public</param-name>
+        <param-value>true</param-value>
+    </init-param>
+     -->
   </filter>
   <filter-mapping>
     <filter-name>RapidFilter</filter-name>
