@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
 
 <!-- 
 
@@ -40,6 +40,14 @@ in a file named "COPYING".  If not, see <http://www.gnu.org/licenses/>.
    <error-code>500</error-code>
    <location>/page500.htm</location>
   </error-page>
+  
+  <session-config>
+      <session-timeout>30</session-timeout>
+	 <cookie-config>
+	  	<http-only>true</http-only>
+	  	<!-- <secure>true</secure> -->
+	 </cookie-config>
+</session-config>
   
   <filter>
     <filter-name>RapidFilter</filter-name>
