@@ -48,6 +48,33 @@ in a file named "COPYING".  If not, see <http://www.gnu.org/licenses/>.
 	  	<!-- <secure>true</secure> -->
 	 </cookie-config>
 </session-config>
+
+<!-- Require HTTPS for everything except simple resources. 
+	<security-constraint>
+        <web-resource-collection>
+            <web-resource-name>HTTPSOnly</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>HTTPSOrHTTP</web-resource-name>
+            <url-pattern>*.ico</url-pattern>
+            <url-pattern>/applications/*</url-pattern>
+            <url-pattern>/scripts/*</url-pattern>
+            <url-pattern>/scripts_min/*</url-pattern>
+            <url-pattern>/styles/*</url-pattern>
+            <url-pattern>/styles_min/*</url-pattern>
+            <url-pattern>/images/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+  -->
   
   <filter>
     <filter-name>RapidFilter</filter-name>
